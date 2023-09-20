@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django import forms
 
 class SignUpForm(UserCreationForm):
+    # UserCreationForm mac dinh bao gom cac truong: username, password1 va password2
+    # dinh nghia them cac truong:email, first_name, last_name cho form dang ky
     email = forms.EmailField(label="", widget=forms.TextInput(
         attrs={
             "class": "form-control",
@@ -22,10 +24,13 @@ class SignUpForm(UserCreationForm):
         }
     ))
     
+    # xac dinh User model co san tu Django se duoc su dung de luu thong tin nguoi dung khi dang ky
+    # User model bao gom 3 truong mac dinh va cong them 3 truong bo sung
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
-        
+    
+    # override phuong thuc __init__ cua lop UserCreationForm de customize 3 truong mac dinh
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
 
@@ -42,4 +47,4 @@ class SignUpForm(UserCreationForm):
         self.fields['password2'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
         self.fields['password2'].label = ''
-        self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'	
+        self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
