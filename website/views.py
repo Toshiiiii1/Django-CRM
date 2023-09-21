@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .form import SignUpForm
+from .form import SignUpForm, AddRecordForm
 from .models import Record
 
 # tao view cho hanh dong dang nhap template home.html
@@ -61,7 +61,7 @@ def register_user(request):
     return render(request, "register.html", {'form': form})
 
 def customer_record(request, pk):
-    # xac thuc nguoi dung
+    # xac thuc nguoi dung da dang nhap
     if (request.user.is_authenticated):
         # lay thong tin cua customer thong qua id
         customer_record = Record.objects.get(id = pk)
@@ -71,11 +71,33 @@ def customer_record(request, pk):
         return redirect('home')
     
 def delete_record(request, pk):
+    # xac thuc nguoi dung da dang nhap
     if (request.user.is_authenticated):
+        # lay du lieu customer tu id
         delete_it = Record.objects.get(id = pk)
+        # xoa customer
         delete_it.delete()
         messages.success(request, "Deleted done")
         return redirect('home')
+    else:
+        messages.success(request, "You must be login")
+        return redirect('home')
+    
+def add_record(request):
+    # xac thuc nguoi dung da dang nhap
+    if (request.user.is_authenticated):
+        # request la POST -> thuc hien them customer
+        if (request.method == 'POST'):
+            form = AddRecordForm(request.POST)
+            # xac thuc form
+            if (form.is_valid()):
+                form.save()
+                messages.success(request, "Add done")
+                return redirect('home')
+        # request la cac phuong thuc HTTP con lai -> load trang them customer
+        else:
+            form = AddRecordForm()
+            return render(request, "add_record.html", {"form": form})
     else:
         messages.success(request, "You must be login")
         return redirect('home')
