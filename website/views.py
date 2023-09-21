@@ -4,9 +4,11 @@ from django.template import loader
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .form import SignUpForm
+from .models import Record
 
 # tao view cho hanh dong dang nhap template home.html
 def home(request):
+    records = Record.objects.all()
     if (request.method == 'POST'):
         # lay username va password tu nguoi dung
         username = request.POST['username']
@@ -25,7 +27,7 @@ def home(request):
             return redirect('home')
     else:
         # quay ve trang chinh
-        return render(request, "home.html", {})
+        return render(request, "home.html", {'records': records})
 
 # tao view cho hanh dong dang xuat o template navbar.html
 def logout_user(request):
