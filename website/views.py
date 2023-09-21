@@ -37,18 +37,23 @@ def logout_user(request):
 
 # tao view cho hanh dong dang ki o template register.html 
 def register_user(request):
+    # request la POST -> thuc hien dang ky
     if (request.method == 'POST'):
         form = SignUpForm(request.POST)
+        # xac thuc form
         if form.is_valid():
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
+            # xac thuc nguoi dung
             user = authenticate(username=username, password=password)
             login(request, user)
             messages.success(request, "Successful")
             return redirect('home')
-        
+    # request la cac phuong thuc HTTP con lai -> load trang dang ky
     else:
         form = SignUpForm()
         return render(request, "register.html", {'form': form})
+    
+    # neu form khong chinh xac thi load lai trang dang ky
     return render(request, "register.html", {'form': form})
