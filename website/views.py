@@ -59,3 +59,13 @@ def register_user(request):
     
     # neu form khong chinh xac thi load lai trang dang ky
     return render(request, "register.html", {'form': form})
+
+def customer_record(request, pk):
+    # xac thuc nguoi dung
+    if (request.user.is_authenticated):
+        # lay thong tin cua customer thong qua id
+        customer_record = Record.objects.get(id = pk)
+        return render(request, "record.html", {'customer_record': customer_record})
+    else:
+        messages.success(request, "You must be login")
+        return redirect('home')
