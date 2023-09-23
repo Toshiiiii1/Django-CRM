@@ -88,6 +88,7 @@ def add_record(request):
     if (request.user.is_authenticated):
         # request la POST -> thuc hien them customer
         if (request.method == 'POST'):
+            # load form
             form = AddRecordForm(request.POST)
             # xac thuc form
             if (form.is_valid()):
@@ -98,6 +99,24 @@ def add_record(request):
         else:
             form = AddRecordForm()
             return render(request, "add_record.html", {"form": form})
+    else:
+        messages.success(request, "You must be login")
+        return redirect('home')
+    
+def update_record(request, pk):
+    # xac thuc nguoi dung da dang nhap
+    if (request.user.is_authenticated):
+        # lay du lieu customer tu id
+        current_record = Record.objects.get(id = pk)
+        # load form
+        form = AddRecordForm(request.POST, instance=current_record)
+        if (form.is_valid()):
+            form.save()
+            messages.success(request, "Update done")
+            return redirect('home')
+        else:
+            form = AddRecordForm(instance=current_record)
+            return render(request, "update_record.html", {"form": form})
     else:
         messages.success(request, "You must be login")
         return redirect('home')
